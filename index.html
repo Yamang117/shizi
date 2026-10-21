@@ -176,7 +176,7 @@ function done(){
   +'<div class="note">明天待複習：'+tmr+' 張（不含新卡）</div><button class="btn" onclick="go(\'detail\',\''+nb.id+'\')">回到筆記本</button>';
 }
 /* ===== Photo scan (Gemini API) ===== */
-const CK='shizi-cfg';let CFG={key:'',model:'gemini-1.5-flash'};
+const CK='shizi-cfg';let CFG={key:'',model:'gemini-2.5-flash'};
 try{Object.assign(CFG,JSON.parse(localStorage.getItem(CK)||'{}'))}catch(e){}
 const saveCfg=()=>{try{localStorage.setItem(CK,JSON.stringify(CFG))}catch(e){}};
 const PROMPT='You are reading a photo of a vocabulary notebook or textbook page. List the English words and phrases the learner is studying.\n'
