@@ -104,7 +104,7 @@ const back=n=>'<button class="back" onclick="go(\''+n+'\''+(n==='detail'?',V.id'
 function home(){
   const t=today();let sum=0;
   const items=S.nbs.map(nb=>{const b=build(nb);const n=b.due.length+b.take.length;sum+=n;const R=b.pl.R;
-    return '<div class="card nb" onclick="go(\'detail\',\''+nb.id+'\')"><div class="row"><b>'+esc(nb.name)+'</b>'+(n?'<span class="pill">今日 '+n+' 字</span>':'')+'</div><div class="sub">'+nb.cards.length+' 個單字　'+(R>0?dstr(nb.deadline)+' 截止，還有 '+R+' 天':'已到期')+'</div></div>'}).join('');
+    return '<div class="card nb" onclick="go(\'detail\',\''+nb.id+'\')"><div class="row"><b>'+esc(nb.name)+'</b>'+(n?'<span class="pill">今日 '+n+' 字</span>':'')+'</div><div class="sub">'+nb.cards.length+' 個單字 '+(R>0?dstr(nb.deadline)+' 截止，還有 '+R+' 天':'已到期')+'</div></div>'}).join('');
   return '<div class="row"><h1>拾字</h1><button class="gear" aria-label="設定" onclick="go(\'settings\')">⚙</button></div><div class="sub">'+dstr(t)+(S.off?'（測試：已快轉 '+S.off+' 天）':'')+'</div>'
   +'<div class="hero"><div class="big">'+sum+'</div><div>個單字等你複習</div></div><h2>我的筆記本</h2>'
   +(items||'<p class="sub">還沒有筆記本。按右下角「+」，建立第一本。</p>')
@@ -132,7 +132,7 @@ function detail(){
   const badge=pl.R<=0?'<span class="pill x">已到期</span>':pl.sprint?'<span class="pill x">衝刺期</span>':'<span class="pill">學習期</span>';
   return back('home')+'<div class="row"><h1>'+esc(nb.name)+'</h1>'+badge+'</div>'
   +'<div class="card"><div class="row"><span>'+(pl.R>0?'還有 '+pl.R+' 天（'+dstr(nb.deadline)+' 截止）':'已超過期限')+'</span><span class="sub">'+nb.mode+' 天模式</span></div>'
-  +'<div class="bar"><i style="width:'+pct+'%"></i></div><div class="sub">已學 '+learned+' ／ '+nb.cards.length+' 個單字'+(b.quota?'　每日新卡約 '+b.quota+' 張':'')+'</div></div>'
+  +'<div class="bar"><i style="width:'+pct+'%"></i></div><div class="sub">已學 '+learned+' ／ '+nb.cards.length+' 個單字'+(b.quota?' 每日新卡約 '+b.quota+' 張':'')+'</div></div>'
   +'<button class="btn" '+(n?'':'disabled')+' onclick="startReview(\''+nb.id+'\')">'+(n?'複習今日 '+n+' 字':'今天沒有要複習的字')+'</button>'
   +'<button class="btn ghost" onclick="go(\'scan\',\''+nb.id+'\')">📷 拍照新增單字 (Gemini)</button>'
   +'<h2>新增單字</h2><textarea id="ta" placeholder="每行一個：單字 | 英文解釋&#10;例如：resilient | able to recover quickly"></textarea>'
@@ -154,7 +154,7 @@ function review(){
   const nb=get(sess.id),c=nb.cards.find(x=>x.id===sess.q[0]),pct=Math.round(sess.done/sess.total*100);
   const R=[['again','重來','a'],['hard','困難','h'],['good','良好','g'],['easy','簡單','']];
   return '<div class="top"><button class="back" onclick="go(\'detail\',\''+nb.id+'\')">‹ 結束</button><b>今日複習</b><span class="sub">'+sess.done+' ／ '+sess.total+'</span></div><div class="bar"><i style="width:'+pct+'%"></i></div>'
-  +'<div class="flash" onclick="sess.flip=!sess.flip;render()">'+(sess.flip?'<div class="small">'+esc(c.term)+'</div><div class="def">'+esc(c.def||'（尚無解釋）')+'</div>'+(c.ex?'<div class="ex">'+esc(c.ex)+'</div>':'')+'<div class="small">點一下翻回正面</div>':'<div class="term">'+esc(c.term)+'</div>'+(c.pos?'<div class="small">'+esc(c.pos)+'</div>':'')+'<div class="small">點一下卡片，看英文解釋</div>')+'</div>'
+  +'<div class="flash" onclick="sess.flip=!sess.flip;render()">'+(sess.flip?'<div class="small">'+esc(c.term)+'</div><div class="def">'+esc(c.def||'（尚無解釋）')+'</div>'+(c.ex?'<div class="ex">'+esc(c.ex)+'</div>':'')+'<div class="small">點一下卡片翻回正面</div>':'<div class="term">'+esc(c.term)+'</div>'+(c.pos?'<div class="small">'+esc(c.pos)+'</div>':'')+'<div class="small">點一下卡片，看英文解釋</div>')+'</div>'
   +(sess.flip?'<div class="rate">'+R.map(([k,l,cl])=>'<button class="'+cl+'" onclick="rate(\''+k+'\')">'+l+'<small>'+lab(nextInterval(nb,c,k))+'</small></button>').join('')+'</div>':'<p class="small" style="text-align:center">翻面後選擇記得多熟</p>');
 }
 function rate(r){
@@ -176,7 +176,7 @@ function done(){
   +'<div class="note">明天待複習：'+tmr+' 張（不含新卡）</div><button class="btn" onclick="go(\'detail\',\''+nb.id+'\')">回到筆記本</button>';
 }
 /* ===== Photo scan (Gemini API) ===== */
-const CK='shizi-cfg';let CFG={key:'',model:'gemini-2.5-flash'};
+const CK='shizi-cfg';let CFG={key:'',model:'gemini-1.5-flash'};
 try{Object.assign(CFG,JSON.parse(localStorage.getItem(CK)||'{}'))}catch(e){}
 const saveCfg=()=>{try{localStorage.setItem(CK,JSON.stringify(CFG))}catch(e){}};
 const PROMPT='You are reading a photo of a vocabulary notebook or textbook page. List the English words and phrases the learner is studying.\n'
@@ -224,7 +224,7 @@ function scan(){
 }
 function confirmv(){
   const n=V.res.filter(x=>x.keep).length;
-  const rows=V.res.map((i,x)=>'<div class="card it"><input type="checkbox" aria-label="加入" '+(x.keep?'checked':'')+' onchange="V.res['+i+'].keep=this.checked;render()"><div class="f">'
+  const rows=V.res.map((x,i)=>'<div class="card it"><input type="checkbox" aria-label="加入" '+(x.keep?'checked':'')+' onchange="V.res['+i+'].keep=this.checked;render()"><div class="f">'
     +'<input value="'+esc(x.term)+'" aria-label="單字" oninput="V.res['+i+'].term=this.value">'
     +'<textarea aria-label="英文解釋" oninput="V.res['+i+'].def=this.value">'+esc(x.def)+'</textarea>'
     +'<div>'+(x.pos?'<span class="pill">'+esc(x.pos)+'</span> ':'')+(x.src==='ai'?'<span class="pill">AI 補充</span> ':'')+(x.dup?'<span class="pill x">已存在</span> ':'')+(x.rev?'<span class="pill x">請確認</span>':'')+'</div></div></div>').join('');
@@ -240,7 +240,7 @@ function addConfirmed(){
 function settings(){
   return back('home')+'<h1>設定</h1><label for="k">Gemini API 金鑰</label><input id="k" type="password" value="'+esc(CFG.key)+'" autocomplete="off" oninput="CFG.key=this.value.trim()">'
   +'<p class="sub">到 Google AI Studio 申請免費金鑰。金鑰只存在手機瀏覽器，不會洩漏。</p>'
-  +'<label for="m">模型名稱</label><input id="m" list="ml" value="'+esc(CFG.model)+'" oninput="CFG.model=this.value.trim()"><datalist id="ml"><option value="gemini-1.5-flash"><option value="gemini-1.5-pro"></datalist><option value="gemini-1.5-flash"><option value="gemini-2.0-flash"><option value="gemini-1.5-pro"></datalist>'
+  +'<label for="m">模型名稱</label><input id="m" list="ml" value="'+esc(CFG.model)+'" oninput="CFG.model=this.value.trim()"><datalist id="ml"><option value="gemini-1.5-flash"><option value="gemini-2.0-flash"><option value="gemini-1.5-pro"></datalist>'
   +'<button class="btn" onclick="saveCfg();V.msg=\'已儲存\';render()">儲存</button>'+(V.msg?'<div class="msg">'+V.msg+'</div>':'');
 }
 const VIEWS={home,new:newv,detail,review,done,scan,confirm:confirmv,settings};
