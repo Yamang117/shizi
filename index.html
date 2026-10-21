@@ -240,7 +240,7 @@ function addConfirmed(){
 function settings(){
   return back('home')+'<h1>設定</h1><label for="k">Gemini API 金鑰</label><input id="k" type="password" value="'+esc(CFG.key)+'" autocomplete="off" oninput="CFG.key=this.value.trim()">'
   +'<p class="sub">到 Google AI Studio 申請免費金鑰。金鑰只存在手機瀏覽器，不會洩漏。</p>'
-  +'<label for="m">模型名稱</label><input id="m" list="ml" value="'+esc(CFG.model)+'" oninput="CFG.model=this.value.trim()"><datalist id="ml"><option value="gemini-1.5-flash"><option value="gemini-2.0-flash"><option value="gemini-1.5-pro"></datalist>'
+  +'<label for="m">模型名稱</label><input id="m" list="ml" value="'+esc(CFG.model)+'" oninput="CFG.model=this.value.trim()"><datalist id="ml"><option value="gemini-1.5-flash"><option value="gemini-1.5-pro"></datalist><option value="gemini-1.5-flash"><option value="gemini-2.0-flash"><option value="gemini-1.5-pro"></datalist>'
   +'<button class="btn" onclick="saveCfg();V.msg=\'已儲存\';render()">儲存</button>'+(V.msg?'<div class="msg">'+V.msg+'</div>':'');
 }
 const VIEWS={home,new:newv,detail,review,done,scan,confirm:confirmv,settings};
